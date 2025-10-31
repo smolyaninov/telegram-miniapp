@@ -1,52 +1,152 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Моё мини-приложение</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      font-family: system-ui;
-      background: #0f0f0f;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    button {
-      background: #0088cc;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-  </style>
+    <meta charset="UTF-8"/>
+    <title>Моё мини-приложение</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            /* Базовые размеры, удобно менять в одном месте */
+            --max-width: 560px;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            /* Адаптивный базовый размер шрифта: от 15px до 18px */
+            font-size: clamp(15px, 1.7vw, 18px);
+            background: #0f0f0f;
+            color: #fff;
+            margin: 0;
+            min-height: 100vh;
+
+            /* Центрируем контент по экрану */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            text-align: center;
+            padding: 24px;
+            border-radius: var(--radius);
+            /* Лёгкая тень, чтобы на десктопе смотрелось аккуратно */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+            background: #121212;
+            animation: fadeIn .35s ease-out;
+        }
+
+        h1 {
+            /* Адаптивный размер заголовка */
+            font-size: clamp(20px, 4.5vw, 28px);
+            margin: 0 0 16px;
+            line-height: 1.2;
+        }
+
+        p {
+            margin: 0 0 20px;
+            opacity: .9;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #0088cc;
+            border: none;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: clamp(14px, 2.8vw, 16px);
+            transition: transform .06s ease, opacity .2s ease;
+        }
+
+        button:active {
+            transform: translateY(1px) scale(0.99);
+        }
+
+        button.secondary {
+            background: #2a2a2a;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1 id="greeting">Загрузка...</h1>
-  <button id="send">Отправить имя боту</button>
-  <button onclick="Telegram.WebApp.close()">Закрыть</button>
+<div class="container">
+    <h1 id="greeting">Загрузка…</h1>
+    <p id="hint">Поделюсь твоим именем с ботом через Mini App.</p>
+    <div class="actions">
+        <button id="send">Отправить имя боту</button>
+        <button class="secondary" id="close">Закрыть</button>
+    </div>
+</div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
+<script>
+    const tg = window.Telegram?.WebApp;
 
-    // Разворачиваем только на мобилке, чтобы не "улетало" в фуллскрин на ПК
-    if (tg.platform === 'ios' || tg.platform === 'android') tg.expand();
+    // Разворачиваем только на мобильных, чтобы на ПК не уходило на весь экран
+    if (tg && (tg.platform === 'ios' || tg.platform === 'android')) {
+        tg.expand();
+    }
 
-    const user = tg.initDataUnsafe?.user;
+    // Поддержка системной тёмной/светлой темы Telegram (если нужно)
+    try {
+        if (tg?.colorScheme === 'light') {
+            document.body.style.background = '#ffffff';
+            document.querySelector('.container').style.background = '#f7f7f7';
+            document.body.style.color = '#111';
+            document.querySelectorAll('button.secondary').forEach(b => b.style.background = '#e6e6e6');
+        }
+    } catch (_) {
+    }
+
+    // Имя пользователя из контекста Mini App
+    const user = tg?.initDataUnsafe?.user;
     const name = user?.first_name || 'гость';
     document.getElementById('greeting').innerText = `Привет, ${name}! 👋`;
 
-    // Отправка данных обратно боту
-    document.getElementById('send').addEventListener('click', () => {
-      tg.sendData(JSON.stringify({ action: 'hello', name })); // отправка JSON
-      tg.close();
+    // Кнопка "Отправить имя боту"
+    const sendBtn = document.getElementById('send');
+    sendBtn.addEventListener('click', () => {
+        // Отправляем данные в бот (в апдейте будет message.web_app_data)
+        tg?.sendData?.(JSON.stringify({action: 'hello', name}));
+
+        // Мягкий UX: показываем подтверждение, НЕ закрываем сразу окно
+        sendBtn.innerText = '✅ Отправлено!';
+        sendBtn.disabled = true;
+        setTimeout(() => {
+            sendBtn.innerText = 'Отправить имя боту';
+            sendBtn.disabled = false;
+        }, 1500);
     });
-  </script>
+
+    // Кнопка "Закрыть"
+    document.getElementById('close').addEventListener('click', () => {
+        tg?.close?.();
+    });
+</script>
 </body>
 </html>
