@@ -30,7 +30,6 @@
             justify-content: center;
             min-height: 100vh;
             padding: 20px;
-            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .card {
@@ -47,46 +46,14 @@
             animation: fadeIn 0.35s ease-out;
         }
 
-        .photo-wrapper {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin-bottom: 20px;
-        }
-
         .photo {
-            width: 100%;
-            height: 100%;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: #2a2a2a;
             object-fit: cover;
+            margin-bottom: 16px;
             border: 3px solid var(--accent);
-            position: relative;
-            z-index: 2;
-        }
-
-        .photo-glow {
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, var(--accent), transparent 70%);
-            opacity: 0.4;
-            z-index: 1;
-            animation: pulse 2.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.4;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-            }
         }
 
         h1 {
@@ -156,6 +123,22 @@
             text-align: center;
         }
 
+        button {
+            margin-top: 25px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -170,17 +153,23 @@
 </head>
 <body>
 <div class="card">
-    <div class="photo-wrapper">
-        <img id="photo" class="photo" src="" alt="Фото профиля">
-        <div class="photo-glow" id="glow"></div>
-    </div>
+    <img id="photo" class="photo" src="" alt="Фото профиля">
     <h1 id="name">Загрузка...</h1>
     <h2 id="username"></h2>
 
     <div class="info">
-        <div class="item"><span class="label">ID:</span><span class="value" id="id">—</span></div>
-        <div class="item"><span class="label">Язык:</span><span class="value" id="lang">—</span></div>
-        <div class="item"><span class="label">Premium:</span><span class="value" id="premium">—</span></div>
+        <div class="item">
+            <span class="label">ID:</span>
+            <span class="value" id="id">—</span>
+        </div>
+        <div class="item">
+            <span class="label">Язык:</span>
+            <span class="value" id="lang">—</span>
+        </div>
+        <div class="item">
+            <span class="label">Premium:</span>
+            <span class="value" id="premium">—</span>
+        </div>
     </div>
 
     <div class="client">
@@ -192,36 +181,29 @@
             <div class="badge" id="viewport">—</div>
         </div>
     </div>
+
+    <button id="close">Закрыть</button>
 </div>
 
 <script>
     const tg = window.Telegram?.WebApp;
-    if (tg?.platform === "ios" || tg?.platform === "android") tg.expand();
 
-    // Настройка интерфейса
-    tg?.setHeaderColor("secondary_bg_color");
-    tg?.setBackgroundColor("#0f0f0f");
-    tg?.enableClosingConfirmation();
+    // Разворачиваем только на мобильных
+    if (tg && (tg.platform === 'ios' || tg.platform === 'android')) tg.expand();
 
-    // Haptic feedback
-    const tap = () => tg?.HapticFeedback?.impactOccurred("soft");
-
-    // Пользователь
+    // Извлекаем пользователя
     const user = tg?.initDataUnsafe?.user || {};
     const name = user?.first_name || "Неизвестный пользователь";
     const username = user?.username ? "@" + user.username : "";
     const photo = user?.photo_url || "https://telegram.org/img/t_logo.png";
 
+    // Вставляем данные в карточку
     document.getElementById("photo").src = photo;
     document.getElementById("name").textContent = name;
     document.getElementById("username").textContent = username;
     document.getElementById("id").textContent = user?.id || "—";
     document.getElementById("lang").textContent = user?.language_code?.toUpperCase() || "—";
     document.getElementById("premium").textContent = user?.is_premium ? "Да 🌟" : "Нет";
-
-    // Glow цвет
-    const glow = document.getElementById("glow");
-    if (user?.is_premium) glow.style.background = "radial-gradient(circle, #ffb347, transparent 70%)";
 
     // Информация о клиенте
     document.getElementById("platform").textContent = tg?.platform || "—";
@@ -234,35 +216,10 @@
         document.body.style.background = "var(--bg-light)";
         document.body.style.color = "var(--text-light)";
         document.querySelector(".card").style.background = "var(--card-bg-light)";
-        glow.style.background = "radial-gradient(circle, #66ccff, transparent 70%)";
     }
 
-    // viewport listener
-    tg?.onEvent("viewportChanged", () => {
-        document.getElementById("viewport").textContent = `${Math.round(tg.viewportHeight)}px`;
-    });
-
-    // BackButton
-    const back = tg?.BackButton;
-    back?.show();
-    back?.onClick(() => {
-        tap();
-        tg?.showAlert("Возврат назад");
-        back.hide();
-    });
-
-    // MainButton
-    const main = tg?.MainButton;
-    main?.setText("Отправить данные");
-    main?.show();
-    main?.onClick(() => {
-        tap();
-        tg?.showPopup({
-            title: "Отправка данных",
-            message: `Пользователь ${name} (${username || "без username"})`,
-            buttons: [{id: "ok", type: "default", text: "OK"}]
-        });
-    });
+    // Закрыть
+    document.getElementById("close").addEventListener("click", () => tg?.close?.());
 </script>
 </body>
 </html>
