@@ -107,6 +107,27 @@
 <script>
     const tg = window.Telegram?.WebApp;
 
+    // === ОТЛАДКА: проверка контекста Telegram WebApp ===
+    console.log("Telegram WebApp context:", tg);
+    console.log("initDataUnsafe:", tg?.initDataUnsafe);
+
+    const debugInfo = document.createElement('pre');
+    debugInfo.style.cssText = 'text-align:left; font-size:12px; background:#1a1a1a; color:#0f0; padding:10px; border-radius:8px; overflow:auto; max-width:90%; max-height:200px;';
+
+    if (!tg?.initDataUnsafe?.query_id) {
+        debugInfo.textContent = '⚠️ Mini App запущен НЕ из Telegram или без контекста бота.\n' +
+            'sendData() не будет доставлен.\n\ninitDataUnsafe:\n' +
+            JSON.stringify(tg?.initDataUnsafe, null, 2);
+    } else {
+        debugInfo.textContent = '✅ Mini App запущен из Telegram.\n' +
+            'query_id: ' + tg.initDataUnsafe.query_id + '\n\n' +
+            JSON.stringify(tg.initDataUnsafe.user, null, 2);
+    }
+
+    document.body.appendChild(debugInfo);
+    // === /ОТЛАДКА ===
+
+
     // Разворачиваем только на мобильных, чтобы на ПК не уходило на весь экран
     if (tg && (tg.platform === 'ios' || tg.platform === 'android')) {
         tg.expand();
