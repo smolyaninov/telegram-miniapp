@@ -9,17 +9,15 @@
         :root {
             --bg-dark: #0f0f0f;
             --bg-light: #ffffff;
-            --card-dark: #181818;
-            --card-light: #f7f7f7;
+            --card-bg-dark: #181818;
+            --card-bg-light: #f7f7f7;
             --text-dark: #fff;
             --text-light: #111;
-            --muted-dark: #a9a9a9;
-            --muted-light: #5a5a5a;
             --accent: #0088cc;
         }
 
         * {
-            box-sizing: border-box
+            box-sizing: border-box;
         }
 
         body {
@@ -27,186 +25,156 @@
             font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
             background: var(--bg-dark);
             color: var(--text-dark);
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 100vh;
             padding: 20px;
         }
 
         .card {
-            background: var(--card-dark);
-            color: var(--text-dark);
-            width: 100%;
-            max-width: 460px;
+            background: var(--card-bg-dark);
             border-radius: 20px;
             padding: 24px;
+            width: 100%;
+            max-width: 420px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            animation: fade .3s ease-out;
-        }
-
-        #loader {
-            color: #9a9a9a;
-            margin: 8px 0 18px
+            animation: fadeIn 0.35s ease-out;
         }
 
         .photo {
-            width: 108px;
-            height: 108px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            object-fit: cover;
             background: #2a2a2a;
+            object-fit: cover;
+            margin-bottom: 16px;
             border: 3px solid var(--accent);
-            margin: 6px auto 14px;
-            position: relative;
-        }
-
-        .photo.premium {
-            box-shadow: 0 0 14px 3px #00bfff70;
-            animation: glow 1.8s ease-in-out infinite alternate
-        }
-
-        @keyframes glow {
-            from {
-                box-shadow: 0 0 6px 2px #00bfff40
-            }
-            to {
-                box-shadow: 0 0 18px 5px #00bfff9a
-            }
         }
 
         h1 {
             margin: 0;
-            font-size: 1.55rem
+            font-size: 1.6rem;
+            line-height: 1.3;
         }
 
         h2 {
             margin: 6px 0 0;
+            color: #aaa;
             font-size: 1rem;
-            font-weight: 500;
-            color: #aaa
+            font-weight: 400;
         }
 
         .info {
-            margin-top: 18px;
+            margin-top: 20px;
+            width: 100%;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            text-align: left
         }
 
-        .row {
+        .item {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
-            background: rgba(255, 255, 255, .06);
+            background: rgba(255, 255, 255, 0.05);
             padding: 10px 14px;
-            border-radius: 12px
+            border-radius: 10px;
         }
 
         .label {
             color: #aaa;
-            font-size: .92rem
+            font-size: 0.9rem;
         }
 
         .value {
-            font-weight: 600
+            font-weight: 500;
+            font-size: 0.95rem;
         }
 
         .client {
-            margin-top: 18px;
-            border-top: 1px solid rgba(255, 255, 255, .1);
-            padding-top: 16px
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            width: 100%;
         }
 
-        .grid {
+        .client h3 {
+            font-size: 1rem;
+            margin: 0 0 10px;
+            color: #bbb;
+        }
+
+        .client-grid {
             display: grid;
-            grid-template-columns:1fr 1fr;
-            gap: 10px
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .badge {
-            background: rgba(255, 255, 255, .08);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
             padding: 10px;
-            font-size: .95rem
-        }
-
-        .actions {
-            margin-top: 18px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #ccc;
+            text-align: center;
         }
 
         button {
+            margin-top: 25px;
             background: var(--accent);
-            color: #fff;
+            color: white;
             border: none;
-            padding: 11px 16px;
+            padding: 12px 18px;
             border-radius: 10px;
             cursor: pointer;
             font-size: 1rem;
-            transition: .18s
-        }
-
-        button.secondary {
-            background: #2b2b2b
+            transition: 0.2s;
         }
 
         button:hover {
-            opacity: .92
+            opacity: 0.9;
         }
 
-        @keyframes fade {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(8px)
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
-                transform: none
+                transform: translateY(0);
             }
-        }
-
-        /* light theme */
-        .light body {
-            background: var(--bg-light);
-            color: var(--text-light)
-        }
-
-        .light .card {
-            background: var(--card-light);
-            color: var(--text-light)
-        }
-
-        .light .row {
-            background: rgba(0, 0, 0, .04)
-        }
-
-        .light .badge {
-            background: rgba(0, 0, 0, .06)
         }
     </style>
 </head>
 <body>
-<div class="card" id="card">
-    <div id="loader">Загружаем профиль…</div>
-
-    <img id="photo" class="photo" src="https://telegram.org/img/t_logo.png" alt="Фото профиля">
-    <h1 id="name">—</h1>
+<div class="card">
+    <img id="photo" class="photo" src="" alt="Фото профиля">
+    <h1 id="name">Загрузка...</h1>
     <h2 id="username"></h2>
 
     <div class="info">
-        <div class="row"><span class="label">ID</span><span class="value" id="id">—</span></div>
-        <div class="row"><span class="label">Язык</span><span class="value" id="lang">—</span></div>
-        <div class="row"><span class="label">Premium</span><span class="value" id="premium">—</span></div>
+        <div class="item">
+            <span class="label">ID:</span>
+            <span class="value" id="id">—</span>
+        </div>
+        <div class="item">
+            <span class="label">Язык:</span>
+            <span class="value" id="lang">—</span>
+        </div>
+        <div class="item">
+            <span class="label">Premium:</span>
+            <span class="value" id="premium">—</span>
+        </div>
     </div>
 
     <div class="client">
-        <div class="grid">
+        <h3>Информация о клиенте Telegram</h3>
+        <div class="client-grid">
             <div class="badge" id="platform">—</div>
             <div class="badge" id="version">—</div>
             <div class="badge" id="theme">—</div>
@@ -214,11 +182,7 @@
         </div>
     </div>
 
-    <div class="actions">
-        <button id="share" class="secondary">Поделиться</button>
-        <button id="sync" class="secondary">Синхронизировать</button>
-        <button id="close">Закрыть</button>
-    </div>
+    <button id="close">Закрыть</button>
 </div>
 
 <script>
@@ -227,79 +191,35 @@
     // Разворачиваем только на мобильных
     if (tg && (tg.platform === 'ios' || tg.platform === 'android')) tg.expand();
 
-    // Адаптация под тему Telegram
-    const applyTheme = () => {
-        if (tg?.colorScheme === 'light') document.documentElement.classList.add('light');
-        else document.documentElement.classList.remove('light');
-    };
-    applyTheme();
-
-    // Извлекаем пользователя (если user нет — остаются дефолты)
+    // Извлекаем пользователя
     const user = tg?.initDataUnsafe?.user || {};
     const name = user?.first_name || "Неизвестный пользователь";
     const username = user?.username ? "@" + user.username : "";
     const photo = user?.photo_url || "https://telegram.org/img/t_logo.png";
 
-    // Вставляем данные
-    const $ = id => document.getElementById(id);
-    $("photo").src = photo;
-    if (user.is_premium) $("photo").classList.add("premium");
+    // Вставляем данные в карточку
+    document.getElementById("photo").src = photo;
+    document.getElementById("name").textContent = name;
+    document.getElementById("username").textContent = username;
+    document.getElementById("id").textContent = user?.id || "—";
+    document.getElementById("lang").textContent = user?.language_code?.toUpperCase() || "—";
+    document.getElementById("premium").textContent = user?.is_premium ? "Да 🌟" : "Нет";
 
-    $("name").textContent = name;
-    $("username").textContent = username;
-    $("id").textContent = user?.id ?? "—";
-    $("lang").textContent = (user?.language_code || "—").toUpperCase();
-    $("premium").textContent = user?.is_premium ? "Да 🌟" : "Нет";
+    // Информация о клиенте
+    document.getElementById("platform").textContent = tg?.platform || "—";
+    document.getElementById("version").textContent = tg?.version || "—";
+    document.getElementById("theme").textContent = tg?.colorScheme === "dark" ? "Тёмная 🌙" : "Светлая ☀️";
+    document.getElementById("viewport").textContent = `${Math.round(tg?.viewportHeight || 0)}px`;
 
-    // Клиент Telegram (визуальные бейджи)
-    const platformIcon = ({p}) => {
-        if (!p) return "—";
-        const s = p.toLowerCase();
-        return s.includes("android") ? "🤖 Android" :
-            s.includes("ios") ? "🍏 iOS" :
-                s.includes("tdesktop") || s.includes("macos") || s.includes("unigram") ? "💻 Desktop" :
-                    "🧭 " + p;
-    };
-    $("platform").textContent = platformIcon({p: tg?.platform});
-    $("version").textContent = tg?.version ? `v${tg.version}` : "—";
-    $("theme").textContent = tg?.colorScheme === "dark" ? "🌙 Тёмная" : "☀️ Светлая";
-    $("viewport").textContent = tg?.viewportHeight ? `${Math.round(tg.viewportHeight)}px` : "—";
+    // Светлая тема
+    if (tg?.colorScheme === "light") {
+        document.body.style.background = "var(--bg-light)";
+        document.body.style.color = "var(--text-light)";
+        document.querySelector(".card").style.background = "var(--card-bg-light)";
+    }
 
-    // Убираем лоадер
-    $("loader").style.display = "none";
-
-    // Кнопки
-    $("close").addEventListener("click", () => tg?.close?.());
-
-    // Поделиться Mini App
-    $("share").addEventListener("click", () => {
-        const url = `https://t.me/${tg?.initDataUnsafe?.user?.username ? tg.initDataUnsafe.user.username : ''}`; // пример: можно подставить ссылку на бота/мини-апп
-        if (tg?.shareUrl) tg.shareUrl(url || "https://t.me/"); // откроет нативный диалог "Поделиться"
-        else tg?.openLink?.(url || "https://t.me/");
-    });
-
-    // Синхронизировать (отправить данные боту, если доступно)
-    $("sync").addEventListener("click", () => {
-        const payload = {
-            action: "sync_user",
-            user: user,
-            client: {
-                platform: tg?.platform, version: tg?.version,
-                colorScheme: tg?.colorScheme, viewportHeight: tg?.viewportHeight
-            }
-        };
-        if (typeof tg?.sendData === "function") {
-            tg.sendData(JSON.stringify(payload));
-            $("sync").textContent = "✅ Отправлено";
-            setTimeout(() => $("sync").textContent = "Синхронизировать", 1200);
-        } else {
-            $("sync").textContent = "⚠️ Недоступно";
-            setTimeout(() => $("sync").textContent = "Синхронизировать", 1200);
-        }
-    });
-
-    // Реакция на смену темы/вьюпорта (по желанию)
-    tg?.onEvent?.("themeChanged", applyTheme);
+    // Закрыть
+    document.getElementById("close").addEventListener("click", () => tg?.close?.());
 </script>
 </body>
 </html>
