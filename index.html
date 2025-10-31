@@ -54,6 +54,21 @@
             object-fit: cover;
             margin-bottom: 16px;
             border: 3px solid var(--accent);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .photo.premium {
+            box-shadow: 0 0 15px 3px #00bfff80;
+            animation: glow 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 6px 2px #00bfff40;
+            }
+            to {
+                box-shadow: 0 0 18px 5px #00bfff90;
+            }
         }
 
         h1 {
@@ -158,18 +173,9 @@
     <h2 id="username"></h2>
 
     <div class="info">
-        <div class="item">
-            <span class="label">ID:</span>
-            <span class="value" id="id">—</span>
-        </div>
-        <div class="item">
-            <span class="label">Язык:</span>
-            <span class="value" id="lang">—</span>
-        </div>
-        <div class="item">
-            <span class="label">Premium:</span>
-            <span class="value" id="premium">—</span>
-        </div>
+        <div class="item"><span class="label">ID:</span><span class="value" id="id">—</span></div>
+        <div class="item"><span class="label">Язык:</span><span class="value" id="lang">—</span></div>
+        <div class="item"><span class="label">Premium:</span><span class="value" id="premium">—</span></div>
     </div>
 
     <div class="client">
@@ -188,37 +194,33 @@
 <script>
     const tg = window.Telegram?.WebApp;
 
-    // Разворачиваем только на мобильных
     if (tg && (tg.platform === 'ios' || tg.platform === 'android')) tg.expand();
 
-    // Извлекаем пользователя
     const user = tg?.initDataUnsafe?.user || {};
     const name = user?.first_name || "Неизвестный пользователь";
     const username = user?.username ? "@" + user.username : "";
     const photo = user?.photo_url || "https://telegram.org/img/t_logo.png";
 
-    // Вставляем данные в карточку
     document.getElementById("photo").src = photo;
+    if (user?.is_premium) document.getElementById("photo").classList.add("premium");
+
     document.getElementById("name").textContent = name;
     document.getElementById("username").textContent = username;
     document.getElementById("id").textContent = user?.id || "—";
     document.getElementById("lang").textContent = user?.language_code?.toUpperCase() || "—";
     document.getElementById("premium").textContent = user?.is_premium ? "Да 🌟" : "Нет";
 
-    // Информация о клиенте
     document.getElementById("platform").textContent = tg?.platform || "—";
     document.getElementById("version").textContent = tg?.version || "—";
     document.getElementById("theme").textContent = tg?.colorScheme === "dark" ? "Тёмная 🌙" : "Светлая ☀️";
     document.getElementById("viewport").textContent = `${Math.round(tg?.viewportHeight || 0)}px`;
 
-    // Светлая тема
     if (tg?.colorScheme === "light") {
         document.body.style.background = "var(--bg-light)";
         document.body.style.color = "var(--text-light)";
         document.querySelector(".card").style.background = "var(--card-bg-light)";
     }
 
-    // Закрыть
     document.getElementById("close").addEventListener("click", () => tg?.close?.());
 </script>
 </body>
