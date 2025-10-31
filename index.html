@@ -14,6 +14,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
     button {
       background: #0088cc;
@@ -22,19 +23,30 @@
       padding: 10px 20px;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 12px;
     }
   </style>
 </head>
 <body>
   <h1 id="greeting">Загрузка...</h1>
+  <button id="send">Отправить имя боту</button>
   <button onclick="Telegram.WebApp.close()">Закрыть</button>
 
   <script>
     const tg = window.Telegram.WebApp;
-    tg.expand(); // развернуть окно на весь экран
+
+    // Разворачиваем только на мобилке, чтобы не "улетало" в фуллскрин на ПК
+    if (tg.platform === 'ios' || tg.platform === 'android') tg.expand();
+
     const user = tg.initDataUnsafe?.user;
     const name = user?.first_name || 'гость';
     document.getElementById('greeting').innerText = `Привет, ${name}! 👋`;
+
+    // Отправка данных обратно боту
+    document.getElementById('send').addEventListener('click', () => {
+      tg.sendData(JSON.stringify({ action: 'hello', name })); // отправка JSON
+      tg.close();
+    });
   </script>
 </body>
 </html>
